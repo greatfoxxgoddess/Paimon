@@ -508,6 +508,7 @@ if userge.has_bot:
 
     @userge.bot.on_inline_query()
     async def inline_answer(_, inline_query: InlineQuery):
+        me = await userge.get_me()
         global MEDIA_URL, MEDIA_TYPE
         results = []
         i_q = inline_query.query
@@ -657,7 +658,7 @@ if userge.has_bot:
             #     )
 
             if string == "alive":
-                alive_info = Bot_Alive.alive_info()
+                alive_info = Bot_Alive.alive_info(me)
                 buttons = Bot_Alive.alive_buttons()
                 if Config.ALIVE_MEDIA:
                     if Config.ALIVE_MEDIA.lower().strip() == "false":

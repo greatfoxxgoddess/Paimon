@@ -16,6 +16,7 @@ CACHED_MEDIA = None
 
 @userge.on_cmd("alive", about={"header": "Just For Fun"}, allow_channels=False)
 async def alive_inline(message: Message):
+    me = await userge.get_me()
     global CACHED_MEDIA
     if message.client.is_bot:
         if Config.ALIVE_MEDIA:
@@ -23,7 +24,7 @@ async def alive_inline(message: Message):
             if url_.lower() == "false":
                 await userge.bot.send_message(
                     message.chat.id,
-                    Bot_Alive.alive_info(),
+                    Bot_Alive.alive_info(me),
                     reply_markup=Bot_Alive.alive_buttons(),
                     disable_web_page_preview=True,
                 )
@@ -33,14 +34,14 @@ async def alive_inline(message: Message):
                     await userge.bot.send_animation(
                         message.chat.id,
                         animation=url_,
-                        caption=Bot_Alive.alive_info(),
+                        caption=Bot_Alive.alive_info(me),
                         reply_markup=Bot_Alive.alive_buttons(),
                     )
                 elif type_ == "url_image":
                     await userge.bot.send_photo(
                         message.chat.id,
                         photo=url_,
-                        caption=Bot_Alive.alive_info(),
+                        caption=Bot_Alive.alive_info(me),
                         reply_markup=Bot_Alive.alive_buttons(),
                     )
                 elif type_ == "tg_media" and isinstance(media_, list):
@@ -55,14 +56,14 @@ async def alive_inline(message: Message):
                     await userge.bot.send_cached_media(
                         message.chat.id,
                         file_id=CACHED_MEDIA,
-                        caption=Bot_Alive.alive_info(),
+                        caption=Bot_Alive.alive_info(me),
                         reply_markup=Bot_Alive.alive_buttons(),
                     )
         else:
             await userge.bot.send_photo(
                 message.chat.id,
                 photo=Bot_Alive.alive_default_imgs(),
-                caption=Bot_Alive.alive_info(),
+                caption=Bot_Alive.alive_info(me),
                 reply_markup=Bot_Alive.alive_buttons(),
             )
     else:
@@ -125,13 +126,14 @@ class Bot_Alive:
         return link_type, link
 
     @staticmethod
-    def alive_info():
+    def alive_info(me):
+        user = " ".join([me.first_name, me.last_name or ""])
         alive_info = f"""
 ㅤㅤㅤㅤㅤㅤㅤ
   🧬  <b> [paimon](tg://openmessage?user_id=1486647366) : </b>   <code>{get_version()}</code>
   🐍  <b> Python  :</b>    <code>v{versions.__python_version__}</code>
   🔥  <b> Pyro      :</b>    <code>v{versions.__pyro_version__}</code>
-  🦋  <b> User      :</b>    `Alicia`
+  🦋  <b> User      :</b>    `{user}`
 
  {Bot_Alive._get_mode()}   <b>|</b>   {userge.uptime}
 """
